@@ -1,9 +1,18 @@
 import requests
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 import os
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ou coloque o domínio do seu site
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def baixar_txt_drive(id_arquivo, nome_saida):

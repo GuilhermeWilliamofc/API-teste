@@ -22,26 +22,6 @@ def baixar_txt_drive(id_arquivo, nome_saida):
         f.write(resposta.content)
 
 
-def buscar_capa_itunes(artista_album):
-    try:
-        if "/" in artista_album:
-            artista, album = [x.strip() for x in artista_album.split("/", 1)]
-        else:
-            return None
-        url = (
-            "https://itunes.apple.com/search"
-            f"?term={requests.utils.quote(artista)}+{requests.utils.quote(album)}"
-            "&entity=album&limit=1"
-        )
-        resp = requests.get(url, timeout=5)
-        data = resp.json()
-        if data["resultCount"] > 0:
-            return data["results"][0]["artworkUrl100"].replace("100x100bb", "300x300bb")
-    except Exception as e:
-        print(f"Erro ao buscar capa para {artista_album}: {e}")
-    return None
-
-
 def gerar_html_audios(input_txt, output_txt):
     html_output = [
         "<script>\n"
@@ -64,17 +44,11 @@ def gerar_html_audios(input_txt, output_txt):
                 html_output.append("</div>\n\n")
             artista_album = linha[1:].strip()
             div_id = f"album{album_id}"
-            url_capa = buscar_capa_itunes(artista_album)
-            capa_html = (
-                f'<img src="{url_capa}" alt="Capa do álbum" style="max-width:200px;"><br>'
-                if url_capa
-                else ""
-            )
+            # Removido busca de capa do álbum
             html_output.append(
                 f"<button onclick=\"toggleAlbum('{div_id}')\">Mostrar/Ocultar {artista_album}</button><br>\n"
                 f'<div id="{div_id}" style="display:none;">\n'
                 f"<h2>{artista_album}</h2>\n"
-                f"{capa_html}"
             )
             album_id += 1
             faixa_num = 1
